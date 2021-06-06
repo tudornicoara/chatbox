@@ -1,5 +1,9 @@
+using ChatBox.Data;
+using ChatBox.Extensions;
+using ChatBox.Helpers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -8,21 +12,44 @@ namespace ChatBox
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
+        private readonly IConfiguration _config;
 
-        public IConfiguration Configuration { get; }
+        public Startup(IConfiguration config)
+        {
+            _config = config;
+        }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAutoMapper(typeof(MappingProfiles));
             services.AddControllersWithViews();
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
                 configuration.RootPath = "ClientApp/dist";
+            });
+            services.AddDbContext<MessageDbContext>(opt =>
+            {
+                opt.UseSqlite(_config.GetConnectionString("DefaultConnection"));
+            });
+            services.AddDbContext<AppIdentityDbContext>(opt =>
+            {
+                opt.UseSqlite(_config.GetConnectionString("IdentityConnection"));
+            });
+            services.AddApplicationServices();
+            services.AddIdentityServices(_config);
+            services.AddCors(opt =>
+            {
+                opt.AddPolicy("CorsPolicy", policy =>
+                {
+                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200");
+                });
+            });
+            // In production, the Angular files will be served from this directory
+            services.AddSpaStaticFiles(config =>
+            {
+                config.RootPath = "ClientApp/dist";
             });
         }
 
