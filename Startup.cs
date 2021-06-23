@@ -83,22 +83,22 @@ namespace ChatBox
                     pattern: "{controller}/{action=Index}/{id?}");
             });
 
-            app.UseSpa(spa =>
-            {
+            //app.UseSpa(spa =>
+            //{
                 // To learn more about options for serving an Angular SPA from ASP.NET Core,
                 // see https://go.microsoft.com/fwlink/?linkid=864501
 
-                spa.Options.SourcePath = "ClientApp";
+                //spa.Options.SourcePath = "ClientApp";
 
-                if (env.IsDevelopment())
-                {
+                //if (env.IsDevelopment())
+                // {
                     // For hosting both server and client 
                     //spa.UseAngularCliServer(npmScript: "start");
 
                     // Use this to separate server from angular hosting
-                    spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
-                }
-            });
+                    //spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
+                // }
+            // });
         }
     }
 }
